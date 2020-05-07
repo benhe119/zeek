@@ -23,7 +23,7 @@ const char* attr_name(attr_tag t)
 	return attr_names[int(t)];
 	}
 
-Attr::Attr(attr_tag t, IntrusivePtr<Expr> e)
+Attr::Attr(attr_tag t, IntrusivePtr<zeek::detail::Expr> e)
 	: expr(std::move(e))
 	{
 	tag = t;
@@ -87,7 +87,7 @@ void Attr::DescribeReST(ODesc* d, bool shorten) const
 		d->Add("=");
 		d->SP();
 
-		if ( expr->Tag() == EXPR_NAME )
+		if ( expr->Tag() == zeek::detail::EXPR_NAME )
 			{
 			d->Add(":zeek:see:`");
 			expr->Describe(d);
@@ -101,7 +101,7 @@ void Attr::DescribeReST(ODesc* d, bool shorten) const
 			d->Add("`");
 			}
 
-		else if ( expr->Tag() == EXPR_CONST )
+		else if ( expr->Tag() == zeek::detail::EXPR_CONST )
 			{
 			ODesc dd;
 			dd.SetQuotes(true);
@@ -446,7 +446,7 @@ void Attributes::CheckAttr(Attr* a)
 			break;
 			}
 
-		const Expr* expire_func = a->AttrExpr();
+		const zeek::detail::Expr* expire_func = a->AttrExpr();
 
 		if ( expire_func->Type()->Tag() != TYPE_FUNC )
 			Error("&expire_func attribute is not a function");
@@ -492,7 +492,7 @@ void Attributes::CheckAttr(Attr* a)
 			break;
 			}
 
-		const Expr* change_func = a->AttrExpr();
+		const zeek::detail::Expr* change_func = a->AttrExpr();
 
 		if ( change_func->Type()->Tag() != TYPE_FUNC || change_func->Type()->AsFuncType()->Flavor() != FUNC_FLAVOR_FUNCTION )
 			Error("&on_change attribute is not a function");

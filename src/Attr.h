@@ -6,7 +6,7 @@
 #include "BroList.h"
 #include "IntrusivePtr.h"
 
-class Expr;
+FORWARD_DECLARE_NAMESPACED(Expr, zeek::detail);
 
 // Note that there are two kinds of attributes: the kind (here) which
 // modify expressions or supply metadata on types, and the kind that
@@ -36,12 +36,12 @@ typedef enum {
 
 class Attr final : public BroObj {
 public:
-	Attr(attr_tag t, IntrusivePtr<Expr> e);
+	Attr(attr_tag t, IntrusivePtr<zeek::detail::Expr> e);
 	explicit Attr(attr_tag t);
 	~Attr() override;
 
 	attr_tag Tag() const	{ return tag; }
-	Expr* AttrExpr() const	{ return expr.get(); }
+	zeek::detail::Expr* AttrExpr() const	{ return expr.get(); }
 
 	template<typename E>
 	void SetAttrExpr(E&& e) { expr = std::forward<E>(e); }
@@ -67,7 +67,7 @@ protected:
 	void AddTag(ODesc* d) const;
 
 	attr_tag tag;
-	IntrusivePtr<Expr> expr;
+	IntrusivePtr<zeek::detail::Expr> expr;
 };
 
 // Manages a collection of attributes.

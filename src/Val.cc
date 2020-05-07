@@ -1806,7 +1806,7 @@ IntrusivePtr<Val> TableVal::Default(Val* index)
 		     record_promotion_compatible(dtype->AsRecordType(),
 						 ytype->AsRecordType()) )
 			{
-			auto coerce = make_intrusive<RecordCoerceExpr>(
+			auto coerce = make_intrusive<zeek::detail::RecordCoerceExpr>(
 			        IntrusivePtr{NewRef{}, def_attr->AttrExpr()},
 			        IntrusivePtr{NewRef{}, ytype->AsRecordType()});
 			def_val = coerce->Eval(nullptr);
@@ -2796,8 +2796,8 @@ IntrusivePtr<RecordVal> RecordVal::CoerceTo(const RecordType* t, Val* aggr, bool
 		if ( ar_t->FieldType(t_i)->Tag() == TYPE_RECORD &&
 		     ! same_type(ar_t->FieldType(t_i), v->Type()) )
 			{
-			auto rhs = make_intrusive<ConstExpr>(IntrusivePtr{NewRef{}, v});
-			auto e = make_intrusive<RecordCoerceExpr>(std::move(rhs),
+			auto rhs = make_intrusive<zeek::detail::ConstExpr>(IntrusivePtr{NewRef{}, v});
+			auto e = make_intrusive<zeek::detail::RecordCoerceExpr>(std::move(rhs),
 			        IntrusivePtr{NewRef{}, ar_t->FieldType(t_i)->AsRecordType()});
 			ar->Assign(t_i, e->Eval(nullptr));
 			continue;
