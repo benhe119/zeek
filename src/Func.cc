@@ -122,7 +122,7 @@ Func::Func(Kind arg_kind) : kind(arg_kind)
 
 Func::~Func() = default;
 
-void Func::AddBody(IntrusivePtr<Stmt> /* new_body */, id_list* /* new_inits */,
+void Func::AddBody(IntrusivePtr<zeek::detail::Stmt> /* new_body */, id_list* /* new_inits */,
 		   size_t /* new_frame_size */, int /* priority */)
 	{
 	Internal("Func::AddBody called");
@@ -266,7 +266,7 @@ std::pair<bool, Val*> Func::HandlePluginResult(std::pair<bool, Val*> plugin_resu
 	return plugin_result;
 	}
 
-BroFunc::BroFunc(ID* arg_id, IntrusivePtr<Stmt> arg_body, id_list* aggr_inits,
+BroFunc::BroFunc(ID* arg_id, IntrusivePtr<zeek::detail::Stmt> arg_body, id_list* aggr_inits,
                  size_t arg_frame_size, int priority)
 	: Func(BRO_FUNC)
 	{
@@ -443,7 +443,7 @@ IntrusivePtr<Val> BroFunc::Call(const zeek::Args& args, Frame* parent) const
 	return result;
 	}
 
-void BroFunc::AddBody(IntrusivePtr<Stmt> new_body, id_list* new_inits,
+void BroFunc::AddBody(IntrusivePtr<zeek::detail::Stmt> new_body, id_list* new_inits,
                       size_t new_frame_size, int priority)
 	{
 	if ( new_frame_size > frame_size )
@@ -567,13 +567,13 @@ void BroFunc::Describe(ODesc* d) const
 		}
 	}
 
-IntrusivePtr<Stmt> BroFunc::AddInits(IntrusivePtr<Stmt> body, id_list* inits)
+IntrusivePtr<zeek::detail::Stmt> BroFunc::AddInits(IntrusivePtr<zeek::detail::Stmt> body, id_list* inits)
 	{
 	if ( ! inits || inits->length() == 0 )
 		return body;
 
-	auto stmt_series = make_intrusive<StmtList>();
-	stmt_series->Stmts().push_back(new InitStmt(inits));
+	auto stmt_series = make_intrusive<zeek::detail::StmtList>();
+	stmt_series->Stmts().push_back(new zeek::detail::InitStmt(inits));
 	stmt_series->Stmts().push_back(body.release());
 
 	return stmt_series;
@@ -869,7 +869,7 @@ static int get_func_priority(const attr_list& attrs)
 	return priority;
 	}
 
-function_ingredients::function_ingredients(IntrusivePtr<Scope> scope, IntrusivePtr<Stmt> body)
+function_ingredients::function_ingredients(IntrusivePtr<Scope> scope, IntrusivePtr<zeek::detail::Stmt> body)
 	{
 	frame_size = scope->Length();
 	inits = scope->GetInits();

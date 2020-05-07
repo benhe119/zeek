@@ -4234,7 +4234,7 @@ void CallExpr::ExprDescribe(ODesc* d) const
 		args->Describe(d);
 	}
 
-static std::unique_ptr<id_list> shallow_copy_func_inits(const IntrusivePtr<Stmt>& body,
+static std::unique_ptr<id_list> shallow_copy_func_inits(const IntrusivePtr<zeek::detail::Stmt>& body,
                                                         const id_list* src)
 	{
 	if ( ! body )

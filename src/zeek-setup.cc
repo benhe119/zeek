@@ -100,7 +100,7 @@ zeek::Supervisor* zeek::supervisor_mgr = nullptr;
 trigger::Manager* trigger_mgr = nullptr;
 
 std::vector<std::string> zeek_script_prefixes;
-Stmt* stmts;
+zeek::detail::Stmt* stmts;
 EventHandlerPtr net_done = nullptr;
 RuleMatcher* rule_matcher = nullptr;
 EventRegistry* event_registry = nullptr;

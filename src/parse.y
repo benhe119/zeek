@@ -252,7 +252,7 @@ static bool expr_is_table_type_name(const Expr* expr)
 	RE_Matcher* re;
 	Expr* expr;
 	EventExpr* event_expr;
-	Stmt* stmt;
+	zeek::detail::Stmt* stmt;
 	ListExpr* list;
 	BroType* type;
 	RecordType* record;
@@ -260,8 +260,8 @@ static bool expr_is_table_type_name(const Expr* expr)
 	TypeList* type_l;
 	TypeDecl* type_decl;
 	type_decl_list* type_decl_l;
-	Case* c_case;
-	case_list* case_l;
+	zeek::detail::Case* c_case;
+	zeek::detail::case_list* case_l;
 	Attr* attr;
 	attr_list* attr_l;
 	attr_tag attrtag;
@@ -1009,7 +1009,7 @@ type:
 			{
 			if ( ! $1 || ! ($$ = $1->AsType()) )
 				{
-				NullStmt here;
+				zeek::detail::NullStmt here;
 				if ( $1 )
 					$1->Error("not a Zeek type", &here);
 				$$ = error_type().release();
@@ -1411,7 +1411,7 @@ stmt:
 	|	TOK_PRINT expr_list ';' opt_no_test
 			{
 			set_location(@1, @3);
-			$$ = new PrintStmt(IntrusivePtr{AdoptRef{}, $2});
+			$$ = new zeek::detail::PrintStmt(IntrusivePtr{AdoptRef{}, $2});
 			if ( ! $4 )
 			    brofiler.AddStmt($$);
 			}
@@ -1419,7 +1419,7 @@ stmt:
 	|	TOK_EVENT event ';' opt_no_test
 			{
 			set_location(@1, @3);
-			$$ = new EventStmt({AdoptRef{}, $2});
+			$$ = new zeek::detail::EventStmt({AdoptRef{}, $2});
 			if ( ! $4 )
 			    brofiler.AddStmt($$);
 			}
@@ -1427,19 +1427,19 @@ stmt:
 	|	TOK_IF '(' expr ')' stmt
 			{
 			set_location(@1, @4);
-			$$ = new IfStmt({AdoptRef{}, $3}, {AdoptRef{}, $5}, make_intrusive<NullStmt>());
+			$$ = new zeek::detail::IfStmt({AdoptRef{}, $3}, {AdoptRef{}, $5}, make_intrusive<zeek::detail::NullStmt>());
 			}
 
 	|	TOK_IF '(' expr ')' stmt TOK_ELSE stmt
 			{
 			set_location(@1, @4);
-			$$ = new IfStmt({AdoptRef{}, $3}, {AdoptRef{}, $5}, {AdoptRef{}, $7});
+			$$ = new zeek::detail::IfStmt({AdoptRef{}, $3}, {AdoptRef{}, $5}, {AdoptRef{}, $7});
 			}
 
 	|	TOK_SWITCH expr '{' case_list '}'
 			{
 			set_location(@1, @2);
-			$$ = new SwitchStmt({AdoptRef{}, $2}, $4);
+			$$ = new zeek::detail::SwitchStmt({AdoptRef{}, $2}, $4);
 			}
 
 	|	for_head stmt
@@ -1449,13 +1449,13 @@ stmt:
 
 	|	TOK_WHILE '(' expr ')' stmt
 			{
-			$$ = new WhileStmt({AdoptRef{}, $3}, {AdoptRef{}, $5});
+			$$ = new zeek::detail::WhileStmt({AdoptRef{}, $3}, {AdoptRef{}, $5});
 			}
 
 	|	TOK_NEXT ';' opt_no_test
 			{
 			set_location(@1, @2);
-			$$ = new NextStmt;
+			$$ = new zeek::detail::NextStmt;
 			if ( ! $3 )
 			    brofiler.AddStmt($$);
 			}
@@ -1463,7 +1463,7 @@ stmt:
 	|	TOK_BREAK ';' opt_no_test
 			{
 			set_location(@1, @2);
-			$$ = new BreakStmt;
+			$$ = new zeek::detail::BreakStmt;
 			if ( ! $3 )
 			    brofiler.AddStmt($$);
 			}
@@ -1471,7 +1471,7 @@ stmt:
 	|	TOK_FALLTHROUGH ';' opt_no_test
 			{
 			set_location(@1, @2);
-			$$ = new FallthroughStmt;
+			$$ = new zeek::detail::FallthroughStmt;
 			if ( ! $3 )
 				brofiler.AddStmt($$);
 			}
@@ -1479,7 +1479,7 @@ stmt:
 	|	TOK_RETURN ';' opt_no_test
 			{
 			set_location(@1, @2);
-			$$ = new ReturnStmt(0);
+			$$ = new zeek::detail::ReturnStmt(0);
 			if ( ! $3 )
 			    brofiler.AddStmt($$);
 			}
@@ -1487,7 +1487,7 @@ stmt:
 	|	TOK_RETURN expr ';' opt_no_test
 			{
 			set_location(@1, @2);
-			$$ = new ReturnStmt({AdoptRef{}, $2});
+			$$ = new zeek::detail::ReturnStmt({AdoptRef{}, $2});
 			if ( ! $4 )
 			    brofiler.AddStmt($$);
 			}
@@ -1495,7 +1495,7 @@ stmt:
 	|	TOK_ADD expr ';' opt_no_test
 			{
 			set_location(@1, @3);
-			$$ = new AddStmt({AdoptRef{}, $2});
+			$$ = new zeek::detail::AddStmt({AdoptRef{}, $2});
 			if ( ! $4 )
 			    brofiler.AddStmt($$);
 			}
@@ -1503,7 +1503,7 @@ stmt:
 	|	TOK_DELETE expr ';' opt_no_test
 			{
 			set_location(@1, @3);
-			$$ = new DelStmt({AdoptRef{}, $2});
+			$$ = new zeek::detail::DelStmt({AdoptRef{}, $2});
 			if ( ! $4 )
 			    brofiler.AddStmt($$);
 			}
@@ -1529,15 +1529,15 @@ stmt:
 	|	TOK_WHEN '(' expr ')' stmt
 			{
 			set_location(@3, @5);
-			$$ = new WhenStmt({AdoptRef{}, $3}, {AdoptRef{}, $5},
-			                  nullptr, nullptr, false);
+			$$ = new zeek::detail::WhenStmt({AdoptRef{}, $3}, {AdoptRef{}, $5},
+			                                  nullptr, nullptr, false);
 			}
 
 	|	TOK_WHEN '(' expr ')' stmt TOK_TIMEOUT expr '{' opt_no_test_block stmt_list '}'
 			{
 			set_location(@3, @9);
-			$$ = new WhenStmt({AdoptRef{}, $3}, {AdoptRef{}, $5},
-			                  {AdoptRef{}, $10}, {AdoptRef{}, $7}, false);
+			$$ = new zeek::detail::WhenStmt({AdoptRef{}, $3}, {AdoptRef{}, $5},
+			                                  {AdoptRef{}, $10}, {AdoptRef{}, $7}, false);
 			if ( $9 )
 			    brofiler.DecIgnoreDepth();
 			}
@@ -1546,15 +1546,15 @@ stmt:
 	|	TOK_RETURN TOK_WHEN '(' expr ')' stmt
 			{
 			set_location(@4, @6);
-			$$ = new WhenStmt({AdoptRef{}, $4}, {AdoptRef{}, $6}, nullptr,
+			$$ = new zeek::detail::WhenStmt({AdoptRef{}, $4}, {AdoptRef{}, $6}, nullptr,
 			                  nullptr, true);
 			}
 
 	|	TOK_RETURN TOK_WHEN '(' expr ')' stmt TOK_TIMEOUT expr '{' opt_no_test_block stmt_list '}'
 			{
 			set_location(@4, @10);
-			$$ = new WhenStmt({AdoptRef{}, $4}, {AdoptRef{}, $6},
-			                  {AdoptRef{}, $11}, {AdoptRef{}, $8}, true);
+			$$ = new zeek::detail::WhenStmt({AdoptRef{}, $4}, {AdoptRef{}, $6},
+			                                  {AdoptRef{}, $11}, {AdoptRef{}, $8}, true);
 			if ( $10 )
 			    brofiler.DecIgnoreDepth();
 			}
@@ -1562,7 +1562,7 @@ stmt:
 	|	index_slice '=' expr ';' opt_no_test
 			{
 			set_location(@1, @4);
-			$$ = new ExprStmt(get_assign_expr({AdoptRef{}, $1},
+			$$ = new zeek::detail::ExprStmt(get_assign_expr({AdoptRef{}, $1},
 			                                  {AdoptRef{}, $3}, in_init));
 
 			if ( ! $5 )
@@ -1572,7 +1572,7 @@ stmt:
 	|	expr ';' opt_no_test
 			{
 			set_location(@1, @2);
-			$$ = new ExprStmt({AdoptRef{}, $1});
+			$$ = new zeek::detail::ExprStmt({AdoptRef{}, $1});
 			if ( ! $3 )
 			    brofiler.AddStmt($$);
 			}
@@ -1580,11 +1580,11 @@ stmt:
 	|	';'
 			{
 			set_location(@1, @1);
-			$$ = new NullStmt;
+			$$ = new zeek::detail::NullStmt;
 			}
 
 	|	conditional
-			{ $$ = new NullStmt; }
+			{ $$ = new zeek::detail::NullStmt; }
 	;
 
 stmt_list:
@@ -1595,7 +1595,7 @@ stmt_list:
 			$1->UpdateLocationEndInfo(@2);
 			}
 	|
-			{ $$ = new StmtList(); }
+			{ $$ = new zeek::detail::StmtList(); }
 	;
 
 event:
@@ -1624,18 +1624,18 @@ case_list:
 		case_list case
 			{ $1->push_back($2); }
 	|
-			{ $$ = new case_list; }
+			{ $$ = new zeek::detail::case_list; }
 	;
 
 case:
 		TOK_CASE expr_list ':' stmt_list
-			{ $$ = new Case({AdoptRef{}, $2}, 0, {AdoptRef{}, $4}); }
+			{ $$ = new zeek::detail::Case({AdoptRef{}, $2}, 0, {AdoptRef{}, $4}); }
 	|
 		TOK_CASE case_type_list ':' stmt_list
-			{ $$ = new Case(nullptr, $2, {AdoptRef{}, $4}); }
+			{ $$ = new zeek::detail::Case(nullptr, $2, {AdoptRef{}, $4}); }
 	|
 		TOK_DEFAULT ':' stmt_list
-			{ $$ = new Case(nullptr, 0, {AdoptRef{}, $3}); }
+			{ $$ = new zeek::detail::Case(nullptr, 0, {AdoptRef{}, $3}); }
 	;
 
 case_type_list:
@@ -1697,12 +1697,12 @@ for_head:
 			id_list* loop_vars = new id_list;
 			loop_vars->push_back(loop_var.release());
 
-			$$ = new ForStmt(loop_vars, {AdoptRef{}, $5});
+			$$ = new zeek::detail::ForStmt(loop_vars, {AdoptRef{}, $5});
 			}
 	|
 		TOK_FOR '(' '[' local_id_list ']' TOK_IN expr ')'
 			{
-			$$ = new ForStmt($4, {AdoptRef{}, $7});
+			$$ = new zeek::detail::ForStmt($4, {AdoptRef{}, $7});
 			}
 	|
 		TOK_FOR '(' TOK_ID ',' TOK_ID TOK_IN expr ')'
@@ -1735,7 +1735,7 @@ for_head:
 			id_list* loop_vars = new id_list;
 			loop_vars->push_back(key_var.release());
 
-			$$ = new ForStmt(loop_vars, {AdoptRef{}, $7}, std::move(val_var));
+			$$ = new zeek::detail::ForStmt(loop_vars, {AdoptRef{}, $7}, std::move(val_var));
 			}
 	|
 		TOK_FOR '(' '[' local_id_list ']' ',' TOK_ID TOK_IN expr ')'
@@ -1754,7 +1754,7 @@ for_head:
 			else
 				val_var = install_ID($7, module, false, false);
 
-			$$ = new ForStmt($4, {AdoptRef{}, $9}, std::move(val_var));
+			$$ = new zeek::detail::ForStmt($4, {AdoptRef{}, $9}, std::move(val_var));
 			}
 	;
 

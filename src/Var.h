@@ -8,19 +8,20 @@
 
 class Expr;
 class FuncType;
-class Stmt;
 class Scope;
 class EventHandlerPtr;
 class StringVal;
 class TableVal;
 class ListVal;
 
+FORWARD_DECLARE_NAMESPACED(Stmt, zeek::detail);
+
 typedef enum { VAR_REGULAR, VAR_CONST, VAR_REDEF, VAR_OPTION, } decl_type;
 
 extern void add_global(ID* id, IntrusivePtr<BroType> t, init_class c,
                        IntrusivePtr<Expr> init, attr_list* attr, decl_type dt);
 
-extern IntrusivePtr<Stmt> add_local(IntrusivePtr<ID> id,
+extern IntrusivePtr<zeek::detail::Stmt> add_local(IntrusivePtr<ID> id,
                                     IntrusivePtr<BroType> t, init_class c,
                                     IntrusivePtr<Expr> init, attr_list* attr,
                                     decl_type dt);
@@ -35,10 +36,10 @@ extern void begin_func(ID* id, const char* module_name, function_flavor flavor,
                        bool is_redef, IntrusivePtr<FuncType> t,
                        attr_list* attrs = nullptr);
 
-extern void end_func(IntrusivePtr<Stmt> body);
+extern void end_func(IntrusivePtr<zeek::detail::Stmt> body);
 
 // Gather all IDs referenced inside a body that aren't part of a given scope.
-extern id_list gather_outer_ids(Scope* scope, Stmt* body);
+extern id_list gather_outer_ids(Scope* scope, zeek::detail::Stmt* body);
 
 extern Val* internal_val(const char* name);
 extern Val* internal_const_val(const char* name); // internal error if not const
