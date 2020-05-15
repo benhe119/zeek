@@ -11,8 +11,9 @@
 #include "NetVar.h"
 #include "Reporter.h"
 
+using namespace zeek::detail;
 
-AnonymizeIPAddr* ip_anonymizer[NUM_ADDR_ANONYMIZATION_METHODS] = {nullptr};
+AnonymizeIPAddr* zeek::detail::ip_anonymizer[NUM_ADDR_ANONYMIZATION_METHODS] = {nullptr};
 
 static uint32_t rand32()
 	{
@@ -20,7 +21,7 @@ static uint32_t rand32()
 	}
 
 // From tcpdpriv.
-int bi_ffs(uint32_t value)
+static int bi_ffs(uint32_t value)
 	{
 	int add = 0;
 	static uint8_t bvals[] = {
@@ -354,7 +355,7 @@ AnonymizeIPAddr_A50::Node* AnonymizeIPAddr_A50::find_node(ipaddr32_t a)
 	return nullptr;
 	}
 
-void init_ip_addr_anonymizers()
+void zeek::detail::init_ip_addr_anonymizers()
 	{
 	ip_anonymizer[KEEP_ORIG_ADDR] = nullptr;
 	ip_anonymizer[SEQUENTIALLY_NUMBERED] = new AnonymizeIPAddr_Seq();
@@ -363,7 +364,7 @@ void init_ip_addr_anonymizers()
 	ip_anonymizer[PREFIX_PRESERVING_MD5] = new AnonymizeIPAddr_PrefixMD5();
 	}
 
-ipaddr32_t anonymize_ip(ipaddr32_t ip, enum ip_addr_anonymization_class_t cl)
+ipaddr32_t zeek::detail::anonymize_ip(ipaddr32_t ip, enum ip_addr_anonymization_class_t cl)
 	{
 	TableVal* preserve_addr = nullptr;
 	AddrVal addr(ip);
@@ -418,7 +419,7 @@ ipaddr32_t anonymize_ip(ipaddr32_t ip, enum ip_addr_anonymization_class_t cl)
 #include "NetVar.h"
 #include "Event.h"
 
-void log_anonymization_mapping(ipaddr32_t input, ipaddr32_t output)
+void zeek::detail::log_anonymization_mapping(ipaddr32_t input, ipaddr32_t output)
 	{
 	if ( anonymization_mapping )
 		mgr.Enqueue(anonymization_mapping,
