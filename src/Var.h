@@ -18,21 +18,21 @@ FORWARD_DECLARE_NAMESPACED(Expr, zeek::detail);
 
 typedef enum { VAR_REGULAR, VAR_CONST, VAR_REDEF, VAR_OPTION, } decl_type;
 
-extern void add_global(ID* id, IntrusivePtr<BroType> t, init_class c,
+extern void add_global(zeek::detail::ID* id, IntrusivePtr<BroType> t, zeek::detail::init_class c,
                        IntrusivePtr<zeek::detail::Expr> init, attr_list* attr, decl_type dt);
 
-extern IntrusivePtr<zeek::detail::Stmt> add_local(IntrusivePtr<ID> id,
-                                    IntrusivePtr<BroType> t, init_class c,
+extern IntrusivePtr<zeek::detail::Stmt> add_local(IntrusivePtr<zeek::detail::ID> id,
+                                    IntrusivePtr<BroType> t, zeek::detail::init_class c,
                                     IntrusivePtr<zeek::detail::Expr> init, attr_list* attr,
                                     decl_type dt);
 
-extern IntrusivePtr<zeek::detail::Expr> add_and_assign_local(IntrusivePtr<ID> id,
+extern IntrusivePtr<zeek::detail::Expr> add_and_assign_local(IntrusivePtr<zeek::detail::ID> id,
                                                IntrusivePtr<zeek::detail::Expr> init,
                                                IntrusivePtr<Val> val = nullptr);
 
-extern void add_type(ID* id, IntrusivePtr<BroType> t, attr_list* attr);
+extern void add_type(zeek::detail::ID* id, IntrusivePtr<BroType> t, attr_list* attr);
 
-extern void begin_func(ID* id, const char* module_name, function_flavor flavor,
+extern void begin_func(zeek::detail::ID* id, const char* module_name, function_flavor flavor,
                        bool is_redef, IntrusivePtr<FuncType> t,
                        attr_list* attrs = nullptr);
 

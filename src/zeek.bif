@@ -1922,7 +1922,7 @@ function global_sizes%(%): var_sizes
 
 	for ( const auto& global : globals )
 		{
-		ID* id = global.second.get();
+		auto id = global.second;
 		if ( id->HasVal() )
 			{
 			auto id_name = make_intrusive<StringVal>(id->Name());
@@ -1949,7 +1949,7 @@ function global_ids%(%): id_table
 
 	for ( const auto& global : globals )
 		{
-		ID* id = global.second.get();
+		auto id = global.second;
 		auto rec = make_intrusive<RecordVal>(script_id);
 		rec->Assign(0, make_intrusive<StringVal>(type_name(id->Type()->Tag())));
 		rec->Assign(1, val_mgr->Bool(id->IsExport()));
@@ -1980,7 +1980,7 @@ function global_ids%(%): id_table
 ##          the string ``"<unknown id>"`` or ``"<no ID value>"`` is returned.
 function lookup_ID%(id: string%) : any
 	%{
-	ID* i = global_scope()->Lookup(id->CheckString());
+	auto* i = global_scope()->Lookup(id->CheckString());
 	if ( ! i )
 		return make_intrusive<StringVal>("<unknown id>");
 

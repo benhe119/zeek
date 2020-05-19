@@ -29,7 +29,7 @@ static IntrusivePtr<Val> init_val(zeek::detail::Expr* init, const BroType* t,
 		}
 	}
 
-static bool add_prototype(ID* id, BroType* t, attr_list* attrs,
+static bool add_prototype(zeek::detail::ID* id, BroType* t, attr_list* attrs,
                           const IntrusivePtr<zeek::detail::Expr>& init)
 	{
 	if ( ! IsFunc(id->Type()->Tag()) )
@@ -106,7 +106,7 @@ static bool add_prototype(ID* id, BroType* t, attr_list* attrs,
 	return true;
 	}
 
-static void make_var(ID* id, IntrusivePtr<BroType> t, init_class c,
+static void make_var(zeek::detail::ID* id, IntrusivePtr<BroType> t, zeek::detail::init_class c,
                      IntrusivePtr<zeek::detail::Expr> init, attr_list* attr, decl_type dt,
                      bool do_init)
 	{
@@ -223,14 +223,14 @@ static void make_var(ID* id, IntrusivePtr<BroType> t, init_class c,
 
 	if ( do_init )
 		{
-		if ( c == INIT_NONE && dt == VAR_REDEF && t->IsTable() &&
+		if ( c == zeek::detail::INIT_NONE && dt == VAR_REDEF && t->IsTable() &&
 		     init && init->Tag() == zeek::detail::EXPR_ASSIGN )
 			// e.g. 'redef foo["x"] = 1' is missing an init class, but the
 			// intention clearly isn't to overwrite entire existing table val.
-			c = INIT_EXTRA;
+			c = zeek::detail::INIT_EXTRA;
 
-		if ( init && ((c == INIT_EXTRA && id->FindAttr(ATTR_ADD_FUNC)) ||
-		              (c == INIT_REMOVE && id->FindAttr(ATTR_DEL_FUNC)) ))
+		if ( init && ((c == zeek::detail::INIT_EXTRA && id->FindAttr(ATTR_ADD_FUNC)) ||
+		              (c == zeek::detail::INIT_REMOVE && id->FindAttr(ATTR_DEL_FUNC)) ))
 			// Just apply the function.
 			id->SetVal(init, c);
 
@@ -303,21 +303,21 @@ static void make_var(ID* id, IntrusivePtr<BroType> t, init_class c,
 	}
 
 
-void add_global(ID* id, IntrusivePtr<BroType> t, init_class c,
+void add_global(zeek::detail::ID* id, IntrusivePtr<BroType> t, zeek::detail::init_class c,
                 IntrusivePtr<zeek::detail::Expr> init, attr_list* attr, decl_type dt)
 	{
 	make_var(id, std::move(t), c, std::move(init), attr, dt, true);
 	}
 
-IntrusivePtr<zeek::detail::Stmt> add_local(IntrusivePtr<ID> id, IntrusivePtr<BroType> t,
-                             init_class c, IntrusivePtr<zeek::detail::Expr> init,
+IntrusivePtr<zeek::detail::Stmt> add_local(IntrusivePtr<zeek::detail::ID> id, IntrusivePtr<BroType> t,
+                             zeek::detail::init_class c, IntrusivePtr<zeek::detail::Expr> init,
                              attr_list* attr, decl_type dt)
 	{
 	make_var(id.get(), std::move(t), c, init, attr, dt, false);
 
 	if ( init )
 		{
-		if ( c != INIT_FULL )
+		if ( c != zeek::detail::INIT_FULL )
 			id->Error("can't use += / -= for initializations of local variables");
 
 		// copy Location to the stack, because AssignExpr may free "init"
@@ -340,17 +340,17 @@ IntrusivePtr<zeek::detail::Stmt> add_local(IntrusivePtr<ID> id, IntrusivePtr<Bro
 		}
 	}
 
-extern IntrusivePtr<zeek::detail::Expr> add_and_assign_local(IntrusivePtr<ID> id,
+extern IntrusivePtr<zeek::detail::Expr> add_and_assign_local(IntrusivePtr<zeek::detail::ID> id,
                                                IntrusivePtr<zeek::detail::Expr> init,
                                                IntrusivePtr<Val> val)
 	{
-	make_var(id.get(), nullptr, INIT_FULL, init, nullptr, VAR_REGULAR, false);
+	make_var(id.get(), nullptr, zeek::detail::INIT_FULL, init, nullptr, VAR_REGULAR, false);
 	auto name_expr = make_intrusive<zeek::detail::NameExpr>(std::move(id));
 	return make_intrusive<zeek::detail::AssignExpr>(std::move(name_expr), std::move(init),
 	                                                false, std::move(val));
 	}
 
-void add_type(ID* id, IntrusivePtr<BroType> t, attr_list* attr)
+void add_type(zeek::detail::ID* id, IntrusivePtr<BroType> t, attr_list* attr)
 	{
 	std::string new_type_name = id->Name();
 	std::string old_type_name = t->GetName();
@@ -453,7 +453,7 @@ static bool canonical_arg_types_match(const FuncType* decl, const FuncType* impl
 	return true;
 	}
 
-void begin_func(ID* id, const char* module_name, function_flavor flavor,
+void begin_func(zeek::detail::ID* id, const char* module_name, function_flavor flavor,
                 bool is_redef, IntrusivePtr<FuncType> t, attr_list* attrs)
 	{
 	if ( flavor == FUNC_FLAVOR_EVENT )

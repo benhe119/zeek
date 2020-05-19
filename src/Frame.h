@@ -63,7 +63,7 @@ public:
 	 * @param id the ID to associate
 	 * @param v the value to associate it with
 	 */
-	void SetElement(const ID* id, Val* v);
+	void SetElement(const zeek::detail::ID* id, Val* v);
 
 	/**
 	 * Gets the value associated with *id* and returns it. Returns
@@ -72,7 +72,7 @@ public:
 	 * @param id the id who's value to retreive
 	 * @return the value associated with *id*
 	 */
-	Val* GetElement(const ID* id) const;
+	Val* GetElement(const zeek::detail::ID* id) const;
 
 	/**
 	 * Resets all of the indexes from [*startIdx, frame_size) in
@@ -243,7 +243,7 @@ private:
 	void UnrefElement(int n);
 
 	/** Have we captured this id? */
-	bool IsOuterID(const ID* in) const;
+	bool IsOuterID(const zeek::detail::ID* in) const;
 
 	/** Serializes an offset_map */
 	static broker::expected<broker::data>

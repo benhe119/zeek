@@ -1183,7 +1183,7 @@ WriterFrontend* Manager::CreateWriter(EnumVal* id, EnumVal* writer, WriterBacken
 
 	if ( ! found_filter_match )
 		{
-		ID* id = global_scope()->Lookup("Log::default_rotation_interval");
+		auto* id = global_scope()->Lookup("Log::default_rotation_interval");
 		assert(id);
 		winfo->interval = id->ID_Val()->AsInterval();
 		}
@@ -1526,7 +1526,7 @@ bool Manager::FinishedRotation(WriterFrontend* writer, const char* new_name, con
 	Func* func = winfo->postprocessor;
 	if ( ! func )
 		{
-		ID* id = global_scope()->Lookup("Log::__default_rotation_postprocessor");
+		auto* id = global_scope()->Lookup("Log::__default_rotation_postprocessor");
 		assert(id);
 		func = id->ID_Val()->AsFunc();
 		}

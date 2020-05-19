@@ -23,7 +23,7 @@ public:
 	static analyzer::Analyzer* InstantiateAnalyzer(Connection* conn)
 		{ return new MQTT_Analyzer(conn); }
 
-	static const ::ID* max_payload_size;
+	static const zeek::detail::ID* max_payload_size;
 
 protected:
 	binpac::MQTT::MQTT_Conn* interp;

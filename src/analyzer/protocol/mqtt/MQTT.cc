@@ -9,7 +9,7 @@
 
 using namespace analyzer::MQTT;
 
-const ::ID* MQTT_Analyzer::max_payload_size = nullptr;
+const zeek::detail::ID* MQTT_Analyzer::max_payload_size = nullptr;
 
 MQTT_Analyzer::MQTT_Analyzer(Connection* c)
 	: tcp::TCP_ApplicationAnalyzer("MQTT", c)

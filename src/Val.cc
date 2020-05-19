@@ -370,12 +370,12 @@ void Val::ValDescribeReST(ODesc* d) const
 
 
 #ifdef DEBUG
-ID* Val::GetID() const
+zeek::detail::ID* Val::GetID() const
 	{
 	return bound_id ? global_scope()->Lookup(bound_id) : nullptr;
 	}
 
-void Val::SetID(ID* id)
+void Val::SetID(zeek::detail::ID* id)
 	{
 	delete [] bound_id;
 	bound_id = id ? copy_string(id->Name()) : nullptr;

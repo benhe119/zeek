@@ -390,7 +390,7 @@ void Trigger::Timeout()
 	Unref(this);
 	}
 
-void Trigger::Register(ID* id)
+void Trigger::Register(zeek::detail::ID* id)
 	{
 	assert(! disabled);
 	notifier::registry.Register(id, this);

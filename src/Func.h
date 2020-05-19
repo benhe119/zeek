@@ -22,11 +22,11 @@
 class Val;
 class FuncType;
 class Frame;
-class ID;
 class Scope;
 
 FORWARD_DECLARE_NAMESPACED(Stmt, zeek::detail);
 FORWARD_DECLARE_NAMESPACED(CallExpr, zeek::detail);
+FORWARD_DECLARE_NAMESPACED(ID, zeek::detail);
 
 class Func : public BroObj {
 public:
@@ -117,7 +117,7 @@ protected:
 
 class BroFunc final : public Func {
 public:
-	BroFunc(ID* id, IntrusivePtr<zeek::detail::Stmt> body, id_list* inits, size_t frame_size, int priority);
+	BroFunc(zeek::detail::ID* id, IntrusivePtr<zeek::detail::Stmt> body, id_list* inits, size_t frame_size, int priority);
 	~BroFunc() override;
 
 	bool IsPure() const override;
@@ -258,7 +258,7 @@ struct function_ingredients {
 
 	~function_ingredients();
 
-	IntrusivePtr<ID> id;
+	IntrusivePtr<zeek::detail::ID> id;
 	IntrusivePtr<zeek::detail::Stmt> body;
 	id_list* inits;
 	int frame_size;

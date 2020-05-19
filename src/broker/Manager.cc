@@ -413,7 +413,7 @@ bool Manager::PublishIdentifier(std::string topic, std::string id)
 	if ( peer_count == 0 )
 		return true;
 
-	ID* i = global_scope()->Lookup(id);
+	auto* i = global_scope()->Lookup(id);
 
 	if ( ! i )
 		return false;

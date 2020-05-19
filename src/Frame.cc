@@ -90,7 +90,7 @@ void Frame::SetElement(int n, Val* v, bool weak_ref)
 		}
 	}
 
-void Frame::SetElement(const ID* id, Val* v)
+void Frame::SetElement(const zeek::detail::ID* id, Val* v)
 	{
 	if ( closure )
 		{
@@ -119,7 +119,7 @@ void Frame::SetElement(const ID* id, Val* v)
 	SetElement(id->Offset(), v);
 	}
 
-Val* Frame::GetElement(const ID* id) const
+Val* Frame::GetElement(const zeek::detail::ID* id) const
 	{
 	if ( closure )
 		{
@@ -502,7 +502,7 @@ void Frame::AddKnownOffsets(const id_list& ids)
 		offset_map = std::make_unique<OffsetMap>();
 
 	std::transform(ids.begin(), ids.end(), std::inserter(*offset_map, offset_map->end()),
-		       [] (const ID* id) -> std::pair<std::string, int>
+		       [] (const zeek::detail::ID* id) -> std::pair<std::string, int>
 		       {
 		       return std::make_pair(std::string(id->Name()), id->Offset());
 		       });
@@ -547,10 +547,10 @@ void Frame::UnrefElement(int n)
 	Unref(frame[n]);
 	}
 
-bool Frame::IsOuterID(const ID* in) const
+bool Frame::IsOuterID(const zeek::detail::ID* in) const
 	{
 	return std::any_of(outer_ids.begin(), outer_ids.end(),
-		[&in](ID* id)-> bool { return strcmp(id->Name(), in->Name()) == 0; });
+		[&in](zeek::detail::ID* id)-> bool { return strcmp(id->Name(), in->Name()) == 0; });
 	}
 
 broker::expected<broker::data> Frame::SerializeIDList(const id_list& in)
@@ -612,7 +612,7 @@ Frame::UnserializeIDList(const broker::vector& data)
 			return std::make_pair(false, std::move(rval));
 			}
 
-		ID* id = new ID(has_name->c_str(), SCOPE_FUNCTION, false);
+		auto* id = new zeek::detail::ID(has_name->c_str(), zeek::detail::SCOPE_FUNCTION, false);
 		id->SetOffset(*has_offset);
 		rval.push_back(id);
 		std::advance(where, 1);

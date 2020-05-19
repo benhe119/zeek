@@ -685,7 +685,7 @@ zeek::detail::SetupResult zeek::detail::setup(int argc, char** argv,
 
 	if ( options.pcap_filter )
 		{
-		ID* id = global_scope()->Lookup("cmd_line_bpf_filter");
+		auto* id = global_scope()->Lookup("cmd_line_bpf_filter");
 
 		if ( ! id )
 			reporter->InternalError("global cmd_line_bpf_filter not defined");
@@ -769,7 +769,7 @@ zeek::detail::SetupResult zeek::detail::setup(int argc, char** argv,
 	// Print the ID.
 	if ( options.identifier_to_print )
 		{
-		ID* id = global_scope()->Lookup(*options.identifier_to_print);
+		auto* id = global_scope()->Lookup(*options.identifier_to_print);
 		if ( ! id )
 			reporter->FatalError("No such ID: %s\n", options.identifier_to_print->data());
 

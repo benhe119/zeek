@@ -266,7 +266,7 @@ std::pair<bool, Val*> Func::HandlePluginResult(std::pair<bool, Val*> plugin_resu
 	return plugin_result;
 	}
 
-BroFunc::BroFunc(ID* arg_id, IntrusivePtr<zeek::detail::Stmt> arg_body, id_list* aggr_inits,
+BroFunc::BroFunc(zeek::detail::ID* arg_id, IntrusivePtr<zeek::detail::Stmt> arg_body, id_list* aggr_inits,
                  size_t arg_frame_size, int priority)
 	: Func(BRO_FUNC)
 	{
