@@ -840,10 +840,10 @@ static int get_func_priority(const attr_list& attrs)
 
 	for ( const auto& a : attrs )
 		{
-		if ( a->Tag() == ATTR_DEPRECATED )
+		if ( a->Tag() == zeek::detail::ATTR_DEPRECATED )
 			continue;
 
-		if ( a->Tag() != ATTR_PRIORITY )
+		if ( a->Tag() != zeek::detail::ATTR_PRIORITY )
 			{
 			a->Error("illegal attribute for function body");
 			continue;

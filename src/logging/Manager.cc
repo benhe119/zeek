@@ -244,7 +244,7 @@ bool Manager::CreateStream(EnumVal* id, RecordVal* sval)
 
 	for ( int i = 0; i < columns->NumFields(); i++ )
 		{
-		if ( ! (columns->FieldDecl(i)->FindAttr(ATTR_LOG)) )
+		if ( ! (columns->FieldDecl(i)->FindAttr(zeek::detail::ATTR_LOG)) )
 		    continue;
 
 		if ( ! threading::Value::IsCompatibleType(columns->FieldType(i)) )
@@ -412,7 +412,7 @@ bool Manager::TraverseRecord(Stream* stream, Filter* filter, RecordType* rt,
 		BroType* t = rtype->FieldType(i);
 
 		// Ignore if &log not specified.
-		if ( ! rtype->FieldDecl(i)->FindAttr(ATTR_LOG) )
+		if ( ! rtype->FieldDecl(i)->FindAttr(zeek::detail::ATTR_LOG) )
 			continue;
 
 		list<int> new_indices = indices;
@@ -522,7 +522,7 @@ bool Manager::TraverseRecord(Stream* stream, Filter* filter, RecordType* rt,
 		else if ( t->Tag() == TYPE_VECTOR )
 			st = t->AsVectorType()->YieldType()->Tag();
 
-		bool optional = rtype->FieldDecl(i)->FindAttr(ATTR_OPTIONAL);
+		bool optional = rtype->FieldDecl(i)->FindAttr(zeek::detail::ATTR_OPTIONAL);
 
 		filter->fields[filter->num_fields - 1] = new threading::Field(new_path.c_str(), nullptr, t->Tag(), st, optional);
 		}

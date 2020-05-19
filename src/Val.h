@@ -714,7 +714,7 @@ class Frame;
 
 class TableVal final : public Val, public notifier::Modifiable {
 public:
-	explicit TableVal(IntrusivePtr<TableType> t, IntrusivePtr<Attributes> attrs = nullptr);
+	explicit TableVal(IntrusivePtr<TableType> t, IntrusivePtr<zeek::detail::Attributes> attrs = nullptr);
 	~TableVal() override;
 
 	// Returns true if the assignment typechecked, false if not. The
@@ -797,9 +797,11 @@ public:
 	ListVal* ConvertToList(TypeTag t=TYPE_ANY) const;
 	ListVal* ConvertToPureList() const;	// must be single index type
 
-	void SetAttrs(IntrusivePtr<Attributes> attrs);
-	Attr* FindAttr(attr_tag t) const;
-	Attributes* Attrs()	{ return attrs.get(); }
+	void SetAttrs(IntrusivePtr<zeek::detail::Attributes> attrs);
+	zeek::detail::Attr* FindAttr(zeek::detail::attr_tag t) const;
+	[[deprecated("Remove in v4.1. Use version that takes zeek::detail::attr_tag.")]]
+	zeek::detail::Attr* FindAttr(::attr_tag t) const;
+	zeek::detail::Attributes* Attrs()	{ return attrs.get(); }
 
 	// Returns the size of the table.
 	int Size() const;
@@ -856,7 +858,9 @@ protected:
 	ParseTimeTableState DumpTableState();
 	void RebuildTable(ParseTimeTableState ptts);
 
-	void CheckExpireAttr(attr_tag at);
+	void CheckExpireAttr(zeek::detail::attr_tag at);
+	[[deprecated("Remove in v4.1. Use version that takes zeek::detail::attr_tag.")]]
+	void CheckExpireAttr(::attr_tag at);
 	bool ExpandCompoundAndInit(val_list* vl, int k, IntrusivePtr<Val> new_val);
 	bool CheckAndAssign(Val* index, IntrusivePtr<Val> new_val);
 
@@ -884,7 +888,7 @@ protected:
 
 	IntrusivePtr<TableType> table_type;
 	CompositeHash* table_hash;
-	IntrusivePtr<Attributes> attrs;
+	IntrusivePtr<zeek::detail::Attributes> attrs;
 	IntrusivePtr<zeek::detail::Expr> expire_time;
 	IntrusivePtr<zeek::detail::Expr> expire_func;
 	TableValTimer* timer;

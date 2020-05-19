@@ -215,6 +215,11 @@ Attr* ID::FindAttr(attr_tag t) const
 	return attrs ? attrs->FindAttr(t) : nullptr;
 	}
 
+Attr* ID::FindAttr(::attr_tag t) const
+	{
+	return FindAttr(static_cast<attr_tag>(t));
+	}
+
 bool ID::IsDeprecated() const
 	{
 	return FindAttr(ATTR_DEPRECATED) != nullptr;
@@ -263,6 +268,11 @@ void ID::RemoveAttr(attr_tag a)
 	{
 	if ( attrs )
 		attrs->RemoveAttr(a);
+	}
+
+void ID::RemoveAttr(::attr_tag a)
+	{
+	RemoveAttr(static_cast<attr_tag>(a));
 	}
 
 void ID::SetOption()

@@ -16,6 +16,8 @@
 #include "Traverse.h"
 #include "module_util.h"
 
+using namespace zeek::detail;
+
 static IntrusivePtr<Val> init_val(zeek::detail::Expr* init, const BroType* t,
                                   IntrusivePtr<Val> aggr)
 	{
@@ -98,7 +100,7 @@ static bool add_prototype(zeek::detail::ID* id, BroType* t, attr_list* attrs,
 
 	if ( attrs )
 		for ( const auto& a : *attrs )
-			if ( a->Tag() == ATTR_DEPRECATED )
+			if ( a->Tag() == zeek::detail::ATTR_DEPRECATED )
 				deprecated = true;
 
 	FuncType::Prototype p{deprecated, {NewRef{}, alt_args}, std::move(offsets)};
@@ -195,7 +197,7 @@ static void make_var(zeek::detail::ID* id, IntrusivePtr<BroType> t, zeek::detail
 	id->SetType(t);
 
 	if ( attr )
-		id->AddAttrs(make_intrusive<Attributes>(attr, t, false, id->IsGlobal()));
+		id->AddAttrs(make_intrusive<zeek::detail::Attributes>(attr, t, false, id->IsGlobal()));
 
 	if ( init )
 		{
@@ -229,8 +231,8 @@ static void make_var(zeek::detail::ID* id, IntrusivePtr<BroType> t, zeek::detail
 			// intention clearly isn't to overwrite entire existing table val.
 			c = zeek::detail::INIT_EXTRA;
 
-		if ( init && ((c == zeek::detail::INIT_EXTRA && id->FindAttr(ATTR_ADD_FUNC)) ||
-		              (c == zeek::detail::INIT_REMOVE && id->FindAttr(ATTR_DEL_FUNC)) ))
+		if ( init && ((c == zeek::detail::INIT_EXTRA && id->FindAttr(zeek::detail::ATTR_ADD_FUNC)) ||
+		              (c == zeek::detail::INIT_REMOVE && id->FindAttr(zeek::detail::ATTR_DEL_FUNC)) ))
 			// Just apply the function.
 			id->SetVal(init, c);
 
@@ -375,7 +377,7 @@ void add_type(zeek::detail::ID* id, IntrusivePtr<BroType> t, attr_list* attr)
 	id->MakeType();
 
 	if ( attr )
-		id->SetAttrs(make_intrusive<Attributes>(attr, tnew, false, false));
+		id->SetAttrs(make_intrusive<zeek::detail::Attributes>(attr, tnew, false, false));
 	}
 
 static void transfer_arg_defaults(RecordType* args, RecordType* recv)
@@ -385,7 +387,7 @@ static void transfer_arg_defaults(RecordType* args, RecordType* recv)
 		TypeDecl* args_i = args->FieldDecl(i);
 		TypeDecl* recv_i = recv->FieldDecl(i);
 
-		Attr* def = args_i->attrs ? args_i->attrs->FindAttr(ATTR_DEFAULT) : nullptr;
+		zeek::detail::Attr* def = args_i->attrs ? args_i->attrs->FindAttr(zeek::detail::ATTR_DEFAULT) : nullptr;
 
 		if ( ! def )
 			continue;
@@ -393,15 +395,15 @@ static void transfer_arg_defaults(RecordType* args, RecordType* recv)
 		if ( ! recv_i->attrs )
 			{
 			attr_list* a = new attr_list{def};
-			recv_i->attrs = make_intrusive<Attributes>(a, recv_i->type, true, false);
+			recv_i->attrs = make_intrusive<zeek::detail::Attributes>(a, recv_i->type, true, false);
 			}
 
-		else if ( ! recv_i->attrs->FindAttr(ATTR_DEFAULT) )
+		else if ( ! recv_i->attrs->FindAttr(zeek::detail::ATTR_DEFAULT) )
 			recv_i->attrs->AddAttr({NewRef{}, def});
 		}
 	}
 
-static Attr* find_attr(const attr_list* al, attr_tag tag)
+static zeek::detail::Attr* find_attr(const attr_list* al, zeek::detail::attr_tag tag)
 	{
 	if ( ! al )
 		return nullptr;
@@ -413,7 +415,7 @@ static Attr* find_attr(const attr_list* al, attr_tag tag)
 	return nullptr;
 	}
 
-static bool has_attr(const attr_list* al, attr_tag tag)
+static bool has_attr(const attr_list* al, zeek::detail::attr_tag tag)
 	{
 	return find_attr(al, tag) != nullptr;
 	}
@@ -494,7 +496,7 @@ void begin_func(zeek::detail::ID* id, const char* module_name, function_flavor f
 					{
 					auto f = args->FieldDecl(i);
 
-					if ( f->attrs && f->attrs->FindAttr(ATTR_DEFAULT) )
+					if ( f->attrs && f->attrs->FindAttr(zeek::detail::ATTR_DEFAULT) )
 						{
 						reporter->PushLocation(args->GetLocationInfo());
 						reporter->Warning(
@@ -571,7 +573,7 @@ void begin_func(zeek::detail::ID* id, const char* module_name, function_flavor f
 			arg_id->SetOffset(prototype->offsets[i]);
 		}
 
-	if ( Attr* depr_attr = find_attr(attrs, ATTR_DEPRECATED) )
+	if ( zeek::detail::Attr* depr_attr = find_attr(attrs, zeek::detail::ATTR_DEPRECATED) )
 		id->MakeDeprecated({NewRef{}, depr_attr->AttrExpr()});
 	}
 

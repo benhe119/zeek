@@ -440,7 +440,7 @@ FuncType::FuncType(IntrusivePtr<RecordType> arg_args,
 		{
 		const TypeDecl* td = args->FieldDecl(i);
 
-		if ( td->attrs && td->attrs->FindAttr(ATTR_DEFAULT) )
+		if ( td->attrs && td->attrs->FindAttr(zeek::detail::ATTR_DEFAULT) )
 			has_default_arg = true;
 
 		else if ( has_default_arg )
@@ -625,7 +625,7 @@ std::optional<FuncType::Prototype> FuncType::FindPrototype(const RecordType& arg
 
 TypeDecl::TypeDecl(IntrusivePtr<BroType> t, const char* i, attr_list* arg_attrs, bool in_record)
 	: type(std::move(t)),
-	  attrs(arg_attrs ? make_intrusive<Attributes>(arg_attrs, type, in_record, false) : nullptr),
+	  attrs(arg_attrs ? make_intrusive<zeek::detail::Attributes>(arg_attrs, type, in_record, false) : nullptr),
 	  id(i)
 	{
 	}
@@ -714,7 +714,7 @@ IntrusivePtr<Val> RecordType::FieldDefault(int field) const
 	if ( ! td->attrs )
 		return nullptr;
 
-	const Attr* def_attr = td->attrs->FindAttr(ATTR_DEFAULT);
+	const zeek::detail::Attr* def_attr = td->attrs->FindAttr(zeek::detail::ATTR_DEFAULT);
 
 	return def_attr ? def_attr->AttrExpr()->Eval(nullptr) : nullptr;
 	}
@@ -834,7 +834,7 @@ IntrusivePtr<TableVal> RecordType::GetRecordFieldsVal(const RecordVal* rv) const
 		if ( fv )
 			::Ref(fv);
 
-		bool logged = (fd->attrs && fd->FindAttr(ATTR_LOG) != nullptr);
+		bool logged = (fd->attrs && fd->FindAttr(zeek::detail::ATTR_LOG) != nullptr);
 
 		auto nr = make_intrusive<RecordVal>(internal_type("record_field")->AsRecordType());
 
@@ -861,15 +861,15 @@ const char* RecordType::AddFields(type_decl_list* others, attr_list* attr)
 		{
 		for ( const auto& at : *attr )
 			{
-			if ( at->Tag() == ATTR_LOG )
+			if ( at->Tag() == zeek::detail::ATTR_LOG )
 				log = true;
 			}
 		}
 
 	for ( const auto& td : *others )
 		{
-		if ( ! td->FindAttr(ATTR_DEFAULT) &&
-		     ! td->FindAttr(ATTR_OPTIONAL) )
+		if ( ! td->FindAttr(zeek::detail::ATTR_DEFAULT) &&
+		     ! td->FindAttr(zeek::detail::ATTR_OPTIONAL) )
 			{
 			delete others;
 			return "extension field must be &optional or have &default";
@@ -883,9 +883,9 @@ const char* RecordType::AddFields(type_decl_list* others, attr_list* attr)
 		if ( log )
 			{
 			if ( ! td->attrs )
-				td->attrs = make_intrusive<Attributes>(new attr_list, td->type, true, false);
+				td->attrs = make_intrusive<zeek::detail::Attributes>(new attr_list, td->type, true, false);
 
-			td->attrs->AddAttr(make_intrusive<Attr>(ATTR_LOG));
+			td->attrs->AddAttr(make_intrusive<zeek::detail::Attr>(zeek::detail::ATTR_LOG));
 			}
 
 		types->push_back(td);
@@ -1035,10 +1035,9 @@ string RecordType::GetFieldDeprecationWarning(int field, bool has_check) const
 	if ( decl)
 		{
 		string result;
-		if ( const Attr* deprecation = decl->FindAttr(ATTR_DEPRECATED) )
+		if ( const zeek::detail::Attr* deprecation = decl->FindAttr(zeek::detail::ATTR_DEPRECATED) )
 			{
-			auto* expr = static_cast<zeek::detail::ConstExpr*>(deprecation->AttrExpr());
-			if ( expr )
+			if ( auto* expr = static_cast<zeek::detail::ConstExpr*>(deprecation->AttrExpr()) )
 				{
 				StringVal* text = expr->Value()->AsStringVal();
 				result = text->CheckString();
@@ -1628,7 +1627,7 @@ bool same_type(const BroType* t1, const BroType* t2, bool is_init, bool match_re
 	return false;
 	}
 
-bool same_attrs(const Attributes* a1, const Attributes* a2)
+bool same_attrs(const zeek::detail::Attributes* a1, const zeek::detail::Attributes* a2)
 	{
 	if ( ! a1 )
 		return (a2 == nullptr);

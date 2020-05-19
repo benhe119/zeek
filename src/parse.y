@@ -262,9 +262,9 @@ static bool expr_is_table_type_name(const zeek::detail::Expr* expr)
 	type_decl_list* type_decl_l;
 	zeek::detail::Case* c_case;
 	zeek::detail::case_list* case_l;
-	Attr* attr;
+	zeek::detail::Attr* attr;
 	attr_list* attr_l;
-	attr_tag attrtag;
+	zeek::detail::attr_tag attrtag;
 }
 
 %%
@@ -1352,41 +1352,42 @@ attr_list:
 
 attr:
 		TOK_ATTR_DEFAULT '=' expr
-		        { $$ = new Attr(ATTR_DEFAULT, {AdoptRef{}, $3}); }
+		        { $$ = new zeek::detail::Attr(zeek::detail::ATTR_DEFAULT, {AdoptRef{}, $3}); }
 	|	TOK_ATTR_OPTIONAL
-			{ $$ = new Attr(ATTR_OPTIONAL); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_OPTIONAL); }
 	|	TOK_ATTR_REDEF
-			{ $$ = new Attr(ATTR_REDEF); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_REDEF); }
 	|	TOK_ATTR_ADD_FUNC '=' expr
-			{ $$ = new Attr(ATTR_ADD_FUNC, {AdoptRef{}, $3}); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_ADD_FUNC, {AdoptRef{}, $3}); }
 	|	TOK_ATTR_DEL_FUNC '=' expr
-			{ $$ = new Attr(ATTR_DEL_FUNC, {AdoptRef{}, $3}); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_DEL_FUNC, {AdoptRef{}, $3}); }
 	|	TOK_ATTR_ON_CHANGE '=' expr
-			{ $$ = new Attr(ATTR_ON_CHANGE, {AdoptRef{}, $3}); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_ON_CHANGE, {AdoptRef{}, $3}); }
 	|	TOK_ATTR_EXPIRE_FUNC '=' expr
-			{ $$ = new Attr(ATTR_EXPIRE_FUNC, {AdoptRef{}, $3}); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_EXPIRE_FUNC, {AdoptRef{}, $3}); }
 	|	TOK_ATTR_EXPIRE_CREATE '=' expr
-			{ $$ = new Attr(ATTR_EXPIRE_CREATE, {AdoptRef{}, $3}); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_EXPIRE_CREATE, {AdoptRef{}, $3}); }
 	|	TOK_ATTR_EXPIRE_READ '=' expr
-			{ $$ = new Attr(ATTR_EXPIRE_READ, {AdoptRef{}, $3}); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_EXPIRE_READ, {AdoptRef{}, $3}); }
 	|	TOK_ATTR_EXPIRE_WRITE '=' expr
-			{ $$ = new Attr(ATTR_EXPIRE_WRITE, {AdoptRef{}, $3}); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_EXPIRE_WRITE, {AdoptRef{}, $3}); }
 	|	TOK_ATTR_RAW_OUTPUT
-			{ $$ = new Attr(ATTR_RAW_OUTPUT); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_RAW_OUTPUT); }
 	|	TOK_ATTR_PRIORITY '=' expr
-			{ $$ = new Attr(ATTR_PRIORITY, {AdoptRef{}, $3}); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_PRIORITY, {AdoptRef{}, $3}); }
 	|	TOK_ATTR_TYPE_COLUMN '=' expr
-			{ $$ = new Attr(ATTR_TYPE_COLUMN, {AdoptRef{}, $3}); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_TYPE_COLUMN, {AdoptRef{}, $3}); }
 	|	TOK_ATTR_LOG
-			{ $$ = new Attr(ATTR_LOG); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_LOG); }
 	|	TOK_ATTR_ERROR_HANDLER
-			{ $$ = new Attr(ATTR_ERROR_HANDLER); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_ERROR_HANDLER); }
 	|	TOK_ATTR_DEPRECATED
-			{ $$ = new Attr(ATTR_DEPRECATED); }
+			{ $$ = new zeek::detail::Attr(zeek::detail::ATTR_DEPRECATED); }
 	|	TOK_ATTR_DEPRECATED '=' TOK_CONSTANT
 			{
 			if ( IsString($3->Type()->Tag()) )
-				$$ = new Attr(ATTR_DEPRECATED, make_intrusive<zeek::detail::ConstExpr>(IntrusivePtr{AdoptRef{}, $3}));
+				$$ = new zeek::detail::Attr(zeek::detail::ATTR_DEPRECATED,
+				                            make_intrusive<zeek::detail::ConstExpr>(IntrusivePtr{AdoptRef{}, $3}));
 			else
 				{
 				ODesc d;
@@ -1394,7 +1395,7 @@ attr:
 				Unref($3);
 				reporter->Error("'&deprecated=%s' must use a string literal",
 				                d.Description());
-				$$ = new Attr(ATTR_DEPRECATED);
+				$$ = new zeek::detail::Attr(zeek::detail::ATTR_DEPRECATED);
 				}
 			}
 	;

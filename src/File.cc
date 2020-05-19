@@ -256,7 +256,7 @@ void BroFile::Describe(ODesc* d) const
 		d->Add("(no type)");
 	}
 
-void BroFile::SetAttrs(Attributes* arg_attrs)
+void BroFile::SetAttrs(zeek::detail::Attributes* arg_attrs)
 	{
 	if ( ! arg_attrs )
 		return;
@@ -264,7 +264,7 @@ void BroFile::SetAttrs(Attributes* arg_attrs)
 	attrs = arg_attrs;
 	Ref(attrs);
 
-	if ( attrs->FindAttr(ATTR_RAW_OUTPUT) )
+	if ( attrs->FindAttr(zeek::detail::ATTR_RAW_OUTPUT) )
 		EnableRawOutput();
 	}
 

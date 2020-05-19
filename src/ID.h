@@ -15,13 +15,13 @@
 class Val;
 class Func;
 class BroType;
-class Attributes;
 
 enum [[deprecated("Remove in v4.1. Use zeek::detail::init_class instead.")]] init_class { INIT_NONE, INIT_FULL, INIT_EXTRA, INIT_REMOVE, };
 enum [[deprecated("Remove in v4.1. Use zeek::detail::IDScope instead.")]] IDScope { SCOPE_FUNCTION, SCOPE_MODULE, SCOPE_GLOBAL };
 
 namespace zeek::detail {
 
+class Attributes;
 class Expr;
 
 enum init_class { INIT_NONE, INIT_FULL, INIT_EXTRA, INIT_REMOVE, };
@@ -94,10 +94,14 @@ public:
 	void SetAttrs(IntrusivePtr<Attributes> attr);
 	void AddAttrs(IntrusivePtr<Attributes> attr);
 	void RemoveAttr(attr_tag a);
+	[[deprecated("Remove in v4.1. Use version that takes zeek::detail::attr_tag")]]
+	void RemoveAttr(::attr_tag a);
 	void UpdateValAttrs();
 	Attributes* Attrs() const	{ return attrs.get(); }
 
 	Attr* FindAttr(attr_tag t) const;
+	[[deprecated("Remove in v4.1. Use version that takes zeek::detail::attr_tag")]]
+	Attr* FindAttr(::attr_tag t) const;
 
 	bool IsDeprecated() const;
 
