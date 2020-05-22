@@ -22,6 +22,7 @@
 
 class Frame;
 class Func;
+class VectorType;
 
 namespace bro_broker {
 

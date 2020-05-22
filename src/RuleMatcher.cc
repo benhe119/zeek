@@ -20,6 +20,7 @@
 #include "File.h"
 #include "Reporter.h"
 #include "module_util.h"
+#include "IPAddr.h"
 
 using namespace std;
 

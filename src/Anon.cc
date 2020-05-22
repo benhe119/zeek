@@ -10,7 +10,7 @@
 #include "Val.h"
 #include "NetVar.h"
 #include "Reporter.h"
-
+#include "IPAddr.h"
 
 AnonymizeIPAddr* ip_anonymizer[NUM_ADDR_ANONYMIZATION_METHODS] = {nullptr};
 
